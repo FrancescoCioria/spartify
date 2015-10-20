@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Partify</title>
+    {% if (o.htmlWebpackPlugin.options.bundle) { %}
+      {% if (o.htmlWebpackPlugin.files && o.htmlWebpackPlugin.files.chunks) { %}
+        {% if (o.htmlWebpackPlugin.files.chunks.main && o.htmlWebpackPlugin.files.chunks.main.css) { %}
+          {% for (var chunk in o.htmlWebpackPlugin.files.chunks.main.css) { %}
+            <link rel="stylesheet" href="{%=o.htmlWebpackPlugin.files.chunks.main.css[chunk]%}" media="all">
+          {% } %}
+        {% } %}
+      {% } %}
+    {% } %}
+  </head>
+  <body>
+    <div id='app'></div>
+    <script src='app.js'></script>
+  </body>
+</html>
