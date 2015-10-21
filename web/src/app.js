@@ -4,6 +4,8 @@ import { Route, DefaultRoute, create } from 'react-router-transition-context';
 import App from './components/App';
 import PartifySessionRoute from './components/partifySession/PartifySessionRoute';
 import CodeVerification from './components/CodeVerification';
+
+require('normalize-css/normalize.css');
 require('revenge-react-components/node_modules/buildo-react-components/lib/flex/flexView.css');
 
 Parse.initialize('f9wu4ZdFIMfE7CNlVKs9zj98Q9lOi0EPwB6tr0Fl', 'iDe9ae2ralCq1of41TdvbM5Td8eTjuXj1JxptwAU');

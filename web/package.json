@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/FrancescoCioria/spartify",
   "dependencies": {
+    "classnames": "^2.2.0",
     "lodash": "^3.10.1",
+    "normalize-css": "^2.3.1",
     "parse": "^1.6.7",
     "react-router": "^0.13.4",
     "react-router-transition-context": "^0.13.3",
