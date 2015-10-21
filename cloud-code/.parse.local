@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Partify": {
+      "applicationId": "f9wu4ZdFIMfE7CNlVKs9zj98Q9lOi0EPwB6tr0Fl"
+    },
+    "_default": {
+      "link": "Partify"
+    }
+  }
+}
