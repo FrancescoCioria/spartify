@@ -42,7 +42,7 @@ export default class PartifySessionRoute extends React.Component {
     }
     return (
       <div id='partify'>
-        { queue.map((s, k) => <div key={k}>{s.attributes.title}</div>) }
+        { queue.map((song, k) => <Song { ...pick(song, ['id', 'title', 'artist']) } key={k} />) }
       </div>
     );
   }
