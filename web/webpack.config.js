@@ -32,7 +32,7 @@ module.exports = assign({}, webpackBase, {
       'process.env.NODE_ENV': JSON.stringify('development')
     }),
     new HtmlWebpackPlugin({ bundle: false, templateContent: indexHtml }),
-    new ExtractTextPlugin('style', '/style.[hash].min.css')
+    new ExtractTextPlugin('style', 'style.[hash].min.css')
   ],
 
   module: assign({}, webpackBase.module, {

@@ -8,12 +8,17 @@ var indexHtml = require('fs').readFileSync(path.resolve(__dirname, './src/index.
 
 var paths = {
   SRC: path.resolve(__dirname, './src'),
-  DIST: path.resolve(__dirname, './lib')
+  DEPLOY: path.resolve(__dirname, './deploy')
 };
 
 module.exports = assign({}, webpackBase, {
 
   entry: paths.SRC + '/app.js',
+
+  output: {
+    path: paths.DEPLOY,
+    filename: 'app.js'
+  },
 
   plugins: [
     new webpack.DefinePlugin({
@@ -25,7 +30,7 @@ module.exports = assign({}, webpackBase, {
       }
     }),
     new HtmlWebpackPlugin({ bundle: true, templateContent: indexHtml }),
-    new ExtractTextPlugin('style', '/style.[hash].min.css')
+    new ExtractTextPlugin('style', 'style.[hash].min.css')
   ],
 
   module: assign({}, webpackBase.module, {
