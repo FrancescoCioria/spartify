@@ -1,7 +1,7 @@
 import React from 'react/addons';
 import { props, t } from 'revenge';
 import { FlexView } from 'revenge-react-components';
-// import Parse from 'parse';
+import Parse from 'parse';
 
 @props({
   id: t.Str,
@@ -11,8 +11,13 @@ import { FlexView } from 'revenge-react-components';
 export default class Song extends React.Component {
 
   toggleUpvote = () => {
+    // update localStorage
     const item = this.isUpvoted() ? '' : 'voted';
     localStorage.setItem(this.props.id, item);
+    // update Parse
+    const action = this.isUpvoted() ? 'add' : 'remove';
+    Parse.Cloud.run(`${action}Upvote`, { songId: this.props.id });
+    // refresh
     this.forceUpdate();
   }
 
