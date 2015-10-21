@@ -1,5 +1,6 @@
 import React from 'react/addons';
 import Parse from 'parse';
+import { FlexView } from 'revenge-react-components';
 import Song from './Song';
 import { pick } from 'lodash';
 
@@ -41,9 +42,9 @@ export default class PartifySessionRoute extends React.Component {
       return null;
     }
     return (
-      <div id='partify'>
+      <FlexView id='partify' className='songs-list' grow column>
         { queue.map((song, k) => <Song { ...pick(song, ['id', 'title', 'artist']) } key={k} />) }
-      </div>
+      </FlexView>
     );
   }
 

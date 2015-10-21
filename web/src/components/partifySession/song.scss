@@ -1,0 +1,37 @@
+.song {
+  padding: 10px;
+
+  &:nth-child(odd) {
+    background-color: #FFAC40;
+  }
+
+  &:nth-child(even) {
+    background-color: #FA7D00;
+  }
+
+  .title {
+    color: black;
+    font-size: 18px;
+  }
+
+  .artist {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 16px;
+  }
+
+  .upvote {
+    margin-left: auto;
+    cursor: pointer;
+    padding: 10px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.3);
+    }
+
+    &.active {
+      background-color: red;
+    }
+  }
+}

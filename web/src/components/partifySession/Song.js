@@ -1,7 +1,10 @@
 import React from 'react/addons';
 import { props, t } from 'revenge';
+import cx from 'classnames';
 import { FlexView } from 'revenge-react-components';
 import Parse from 'parse';
+
+require('./song.scss');
 
 @props({
   id: t.Str,
@@ -26,9 +29,12 @@ export default class Song extends React.Component {
   render() {
     const { title, artist } = this.props;
     return (
-      <FlexView className='song'>
-        <p>{`${artist} - ${title}`}</p>
-        <div style={{marginLeft: 'auto'}} onClick={this.toggleUpvote}>
+      <FlexView className='song' vAlignContent='center'>
+        <div className='info'>
+          <div className='title'>{title}</div>
+          <div className='artist'>{artist}</div>
+        </div>
+        <div onClick={this.toggleUpvote} className={cx('upvote', { active: this.isUpvoted() })}>
           {this.isUpvoted() ? '+1' : '+0'}
         </div>
       </FlexView>
