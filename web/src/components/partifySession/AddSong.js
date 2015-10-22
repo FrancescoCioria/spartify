@@ -19,12 +19,13 @@ export default class AddSong extends React.Component {
         'Accept': 'application/json'
       };
       axios.get(spotifySearch(input), headers).then((res) => {
-        this.options = res.data.tracks.items.map((track) => {
+        const { items } = res.data.tracks;
+        this.options = items.map((track, i) => {
           return {
             title: track.name,
             artist: track.artists[0].name,
             href: track.uri,
-            value: track.uri,
+            value: i + '',
             label: track.name
           };
         });
@@ -52,7 +53,7 @@ export default class AddSong extends React.Component {
     const { loading, onSave } = this.props;
     return (
       <div className={cx('add-song', { loading })}>
-        <Dropdown asyncOptions={this.searchSpotify} onChange={onSave} optionRenderer={this.renderOption} value='' />
+        <Dropdown filterOptions={options => options || []} asyncOptions={this.searchSpotify} onChange={onSave} value='' />
       </div>
     );
   }

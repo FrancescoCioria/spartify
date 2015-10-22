@@ -29,7 +29,7 @@ export default class PartifySessionRoute extends React.Component {
 
   setLoading = (loading) => this.setState({ loading })
 
-  getQueue() {
+  getQueue = () => {
     const Song = Parse.Object.extend('Song');
     const query = new Parse.Query(Song);
     query.equalTo('party_session', this.getPartySessionPointer());
