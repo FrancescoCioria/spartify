@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/FrancescoCioria/spartify",
   "dependencies": {
+    "axios": "^0.7.0",
     "classnames": "^2.2.0",
     "lodash": "^3.10.1",
     "normalize-css": "^2.3.1",
