@@ -19,19 +19,17 @@
     "url": "git@github.com:buildo/web-lib-seed"
   },
   "keywords": [],
-  "author": "Giovanni Gonzaga <giovanni@buildo.io>",
+  "author": "Francesco Cioria <francesco@buildo.io>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/buildo/web-lib-seed/issues"
   },
   "homepage": "https://github.com/buildo/web-lib-seed",
   "dependencies": {
-    "continuation-local-storage": "^3.1.4",
     "keypress": "^0.2.1",
     "lodash": "^3.10.1",
     "node-parse-api": "^0.3.8",
     "readline-sync": "^1.2.21",
-    "request-promise": "^1.0.1",
     "spotify-node-applescript": "^0.2.2"
   },
   "devDependencies": {

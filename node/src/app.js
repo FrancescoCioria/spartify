@@ -5,7 +5,7 @@ import getCursorPosition from '../cursor-position';
 keypress(process.stdin);
 
 const QUIT = 'q',
-  PLAY_PAUSE = [ 'f8','p' ],
+  PLAY_PAUSE = [ 'f8', 'p' ],
   NEXT = [ 'f9', 'n' ];
 
 const rl = utils.rlinterface(),
@@ -43,7 +43,7 @@ function cursorInterface() {
 
 function logInfos() {
   ping = new Date();
-  currentSong = {title: 'BEAUTIFUL SONG'};
+  // currentSong = {title: 'BEAUTIFUL SONG'};
   queue = range(10);
   const hours = ('0' + ping.getHours()).slice(-2);
   const minutes = ('0' + ping.getMinutes()).slice(-2);
@@ -85,7 +85,6 @@ async function controlSongState() {
   if (!insidePlayingNext) {
     const state = await spotify.getState();
     const track = await spotify.getTrack();
-    // if ((state.position / (track.duration / 1000)) > 0.1) {
     if ((track.duration / 1000) - state.position < 3) {
       playNext();
     }
@@ -108,18 +107,10 @@ async function askForActions(prompt) {
         log('discarded');
       }
     }
-    // resetInterval();
   });
   process.stdin.setRawMode(true);
   process.stdin.resume();
 }
-
-// function resetInterval() {
-//   if (interval) {
-//     clearInterval(interval);
-//   }
-//   interval = setInterval(controlSongState, 1000);
-// };
 
 async function runPlayer(partySession) {
   partySession = partySession || await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
