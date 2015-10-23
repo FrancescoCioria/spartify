@@ -1,49 +1,32 @@
-import { Parse } from 'node-parse-api';
-import readlineSync from 'readline-sync';
 import tracks from '../buildo-trushy.json';
-import { values } from 'lodash';
+import { values, includes } from 'lodash';
+import utils from './utils';
 
-const APP_ID = 'f9wu4ZdFIMfE7CNlVKs9zj98Q9lOi0EPwB6tr0Fl',
-  MASTER_KEY = 'NqcjMzG5vDZ0c2wz3k6K2RizTxLSoLCWTIv5o1a1',
-  _app = new Parse(APP_ID, MASTER_KEY);
+const rl = utils.rlinterface(),
+  app = utils.appInterface();
 
-function rlinterface() {
-  return {
-    question: (q, defaultInput) => new Promise((resolve) => {
-      const out = readlineSync.question(q + ' ', { defaultInput });
-      resolve(out);
-    })
-  }
-};
-
-function appInterface() {
-  return {
-    find: (Class, query) => new Promise((resolve, reject) => {
-      _app.find(Class, query, (err, res) => err ? reject(err) : resolve(res));
-    }),
-    insert: (Class, object) => new Promise((resolve, reject) => {
-      _app.insert(Class, object, (err, res) => err ? reject(err) : resolve(res));
-    })
-  }
-};
-
-const rl = rlinterface(),
-  app = appInterface();
-
-async function populateScript() {
-  // const code = await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
-  const code = '7Ooxqxnt4A';
+async function populateScript(partySession) {
+  partySession = partySession || await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
   const pointer = {
     __type: 'Pointer',
     className: 'PartySession',
-    objectId: code
+    objectId: partySession
   };
 
+  // clear session
+  const res = await app.find('Song', {where: {party_session: pointer}, limit: 10000});
+  await Promise.all(res.results.map(song => app.delete('Song', song.objectId)));
+
+  // keep only unique and available tracks
   const uniqueTracks = values(tracks.reduce((acc, track) => {
-    acc[track.track.id] = track.track;
+    if (includes(track.track.available_markets, 'IT')) { // songs must be available in Italy...
+      acc[track.track.id] = track.track;
+    }
     return acc;
   }, {}));
-  await uniqueTracks.map(track => {
+
+  // save songs
+  await Promise.all(uniqueTracks.map(track => {
     return app.insert('Song', {
       title: track.name,
       href: track.uri,
@@ -53,9 +36,7 @@ async function populateScript() {
       artist: track.artists[0].name,
       party_session: pointer
     });
-  });
-};
-
-populateScript();
+  }));
+}
 
 export default populateScript;
