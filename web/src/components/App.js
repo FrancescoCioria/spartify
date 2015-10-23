@@ -24,11 +24,11 @@ export default class App extends React.Component {
     return (
       <div>
         <FlexView className='header' grow hAlignContent='center'>
-          <h1>Spartify</h1>
+          {
+          //<h1>Spartify</h1>
+          }
         </FlexView>
-        <FlexView className='page-content' hAlignContent='center'>
-          <RouteHandler />
-        </FlexView>
+        <RouteHandler />
       </div>
     );
   }

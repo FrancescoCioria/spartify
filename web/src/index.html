@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Partify</title>
     {% for (var chunk in o.htmlWebpackPlugin.files.chunks.main.css) { %}
       <link rel="stylesheet" href="{%=o.htmlWebpackPlugin.files.chunks.main.css[chunk]%}" media="all">

@@ -75,13 +75,15 @@ export default class PartifySessionRoute extends React.Component {
     const { queue, loading } = this.state;
     if (!queue) { return null; }
     return (
-      <FlexView id='partify' className='songs-list' grow column>
+      <div id='partify' className='songs-list' grow column>
         <AddSong onSave={this.onSave} />
-        <div className={cx('queue', { loading })} style={{ position: 'relative' }}>
-          { loading && <LoadingSpinner /> }
-          { queue.map((song, k) => <Song { ...pick(song, ['id', 'title', 'artist']) } key={k} />) }
-        </div>
-      </FlexView>
+        <FlexView className='page-content' hAlignContent='center'>
+          <FlexView className={cx('queue', { loading })} style={{ position: 'relative' }} column grow>
+            { loading && <LoadingSpinner /> }
+            { queue.map((song, k) => <Song { ...pick(song, ['id', 'title', 'artist']) } key={k} />) }
+          </FlexView>
+        </FlexView>
+      </div>
     );
   }
 

@@ -15,4 +15,18 @@
 }
 
 .is-mobile #app {
+  // position: absolute;
+  // top: 0;
+  // bottom: 0;
+
+  .page-content {
+    // position: absolute;
+    // top: 80%;
+
+    .queue {
+      border-radius: 5px;
+      overflow: hidden;
+    }
+  }
+
 }

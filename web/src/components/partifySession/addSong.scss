@@ -1,0 +1,66 @@
+.add-song {
+  height: 400px;
+  width: 100%;
+  overflow: hidden;
+
+  .background-image {
+    background-image: url('https://popnarcotic.files.wordpress.com/2011/10/zombiedanceparty.jpg');
+    background-size: cover;
+    -webkit-filter: blur(8px) grayscale(.7);
+    filter: blur(8px) grayscale(.7);
+    height: 100%;
+    margin: 0 -10px;
+  }
+
+  .Select {
+    width: 80%;
+    margin-bottom: 150px;
+    .Select-control {
+      font-size: 26px;
+      background-color: transparent;
+      box-shadow: none;
+      border: none;
+      border-bottom: 1px solid white;
+      border-radius: 0;
+      padding: 25px 52px 10px 20px;
+
+      .Select-placeholder {
+        padding: 25px 52px 25px 25px;
+      }
+
+      &:hover {
+        box-shadow: none;
+        // box-shadow: 0 0 25px -0px white;
+      }
+
+      .Select-input {
+        > input {
+          color: white;
+          width: 100% !important;
+        }
+      }
+    }
+  }
+}
+
+.is-mobile .add-song {
+  height: 360px;
+
+  .Select {
+    .Select-control {
+      font-size: 22px;
+
+      .Select-placeholder {}
+
+      &:hover {}
+
+      .Select-input {
+        > input {}
+      }
+    }
+
+    .Select-menu-outer {
+      // font-size: 40px !important;
+    }
+  }
+}
