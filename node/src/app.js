@@ -1,13 +1,12 @@
-import { range } from 'lodash';
+import { range, includes } from 'lodash';
 import keypress from 'keypress';
 import utils from './utils';
 import getCursorPosition from '../cursor-position';
 keypress(process.stdin);
 
 const QUIT = 'q',
-  // PREV = 'f7',
-  PLAY_PAUSE = 'f8',
-  NEXT = 'n';
+  PLAY_PAUSE = [ 'f8','p' ],
+  NEXT = [ 'f9', 'n' ];
 
 const rl = utils.rlinterface(),
   spotify = utils.spotifyInterface(),
@@ -19,6 +18,11 @@ let queue,
   currentSong,
   insidePlayingNext,
   ping;
+
+function log(l) {
+  process.stdout.clearLine();
+  console.log(l);
+}
 
 
 // TESTS
@@ -35,11 +39,6 @@ function cursorInterface() {
       getCursorPosition((err, res) => resolve(err || res));
     })
   };
-}
-
-function log(l) {
-  process.stdout.clearLine();
-  console.log(l);
 }
 
 function logInfos() {
@@ -98,21 +97,16 @@ async function askForActions(prompt) {
   process.stdin.on('keypress', function (chunk, key) {
     if (key && (key.name === QUIT || (key.ctrl && key.name === 'c'))) {
       process.exit(1);
-      return;
-    }
-    switch (key.name) {
-      case PLAY_PAUSE:
-        log('PLAY_PAUSE');
-        spotify.playPause();
-        break;
-      case NEXT:
-        log('NEXT');
-        if (!insidePlayingNext) {
-          playNext();
-        } else {
-          log('discarded');
-        }
-        break;
+    } else if (includes(PLAY_PAUSE, key.name)) {
+      log('PLAY_PAUSE');
+      spotify.playPause();
+    } else if (includes(NEXT, key.name)) {
+      log('NEXT');
+      if (!insidePlayingNext) {
+        playNext();
+      } else {
+        log('discarded');
+      }
     }
     // resetInterval();
   });
