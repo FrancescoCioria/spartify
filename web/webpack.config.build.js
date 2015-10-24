@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var CompressionPlugin = require('compression-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpackBase = require('./webpack.base');
@@ -17,7 +18,7 @@ module.exports = assign({}, webpackBase, {
 
   output: {
     path: paths.DEPLOY,
-    filename: 'app.js'
+    filename: 'app.[hash].js'
   },
 
   plugins: [
@@ -26,9 +27,14 @@ module.exports = assign({}, webpackBase, {
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: false
+        warnings: false,
+        screw_ie8: true
       }
     }),
+    new CompressionPlugin({
+      regExp: /\.js$|\.css$/
+    }),
+    new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({ bundle: true, templateContent: indexHtml }),
     new ExtractTextPlugin('style', 'style.[hash].min.css')
   ],
