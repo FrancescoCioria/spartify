@@ -1,6 +1,6 @@
 import React from 'react';
 import Parse from 'parse';
-import { props, t } from 'revenge';
+import { props, t } from 'tcomb-react';
 import cx from 'classnames';
 import { FlexView } from 'buildo-react-components/lib/flex';
 

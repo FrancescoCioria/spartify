@@ -9,8 +9,8 @@ import Song from './Song';
 
 export default class PartifySessionRoute extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: false
     };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { props, t } from 'revenge';
+import { props, t } from 'tcomb-react';
 import axios from 'axios';
 import cx from 'classnames';
 import { FlexView } from 'buildo-react-components/lib/flex';
@@ -10,7 +10,6 @@ require('./addSong.scss');
 const spotifySearch = (q) => `https://api.spotify.com/v1/search?q=${q}&type=track&market=IT`;
 
 @props({
-  // valueLink: t.Obj,
   onSave: t.Func,
   loading: t.maybe(t.Bool)
 })

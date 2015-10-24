@@ -1,6 +1,6 @@
 import React from 'react';
 import Parse from 'parse';
-import { Route, DefaultRoute, create } from 'react-router-transition-context';
+import { Route, DefaultRoute, create } from 'react-router';
 import App from './components/App';
 import PartifySessionRoute from './components/partifySession/PartifySessionRoute';
 import CodeVerification from './components/CodeVerification';

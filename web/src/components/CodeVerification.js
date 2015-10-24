@@ -1,11 +1,10 @@
 import React from 'react';
-import { t } from 'revenge';
 // import { linkState } from 'buildo-react-components/lib/link-state';
 
 export default class CodeVerificationRoute extends React.Component {
 
   static contextTypes = {
-    router: t.Func
+    router: React.PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -14,7 +13,7 @@ export default class CodeVerificationRoute extends React.Component {
   }
 
   componentDidMount() {
-    this.context.router.replaceWith('/7Ooxqxnt4A');
+    this.context.router.replaceWith('PARTIFY_SESSION', { partySession: '7Ooxqxnt4A' });
   }
 
   onSubmit() {
