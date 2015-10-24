@@ -62,7 +62,8 @@ export default class PartifySessionRoute extends React.Component {
     song.set('party_session', this.getPartySessionPointer());
 
     song.save(null, {
-      success: () => {
+      success: (newSong) => {
+        localStorage.setItem(newSong.id, 'voted');
         this.getQueue();
       },
       error: () => {
