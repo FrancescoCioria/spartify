@@ -56,7 +56,7 @@ export default class AddSong extends React.Component {
     return (
       <div className={cx('add-song', { loading })} style={{ position: 'relative' }}>
         <div className='background-image'/>
-        <FlexView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} hAlignContent='center' vAlignContent='center'>
+        <FlexView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} hAlignContent='center' vAlignContent='center' column>
           <Dropdown placeholder='Aggiungi...' filterOptions={options => options || []} asyncOptions={this.searchSpotify} optionRenderer={this.renderOption} onChange={onSave} value='' />
         </FlexView>
       </div>
