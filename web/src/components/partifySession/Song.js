@@ -1,8 +1,8 @@
-import React from 'react/addons';
+import React from 'react';
+import Parse from 'parse';
 import { props, t } from 'revenge';
 import cx from 'classnames';
-import { FlexView } from 'revenge-react-components';
-import Parse from 'parse';
+import { FlexView } from 'buildo-react-components/lib/flex';
 
 require('./song.scss');
 

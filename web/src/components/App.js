@@ -1,7 +1,8 @@
-import React from 'react/addons';
+import React from 'react';
 import cx from 'classnames';
 import { RouteHandler } from 'react-router-transition-context';
-import { MobileDetector, FlexView } from 'revenge-react-components';
+import { FlexView } from 'buildo-react-components/lib/flex';
+import MobileDetector from 'buildo-react-components/lib/mobile-detector';
 
 require('./main.scss');
 

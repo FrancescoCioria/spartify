@@ -1,8 +1,9 @@
 import React from 'react';
-import { props, t} from 'revenge';
+import { props, t } from 'revenge';
 import axios from 'axios';
 import cx from 'classnames';
-import { FlexView, Dropdown } from 'revenge-react-components';
+import { FlexView } from 'buildo-react-components/lib/flex';
+import Dropdown from 'buildo-react-components/lib/dropdown';
 
 require('./addSong.scss');
 

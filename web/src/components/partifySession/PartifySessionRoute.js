@@ -1,10 +1,11 @@
-import React from 'react/addons';
+import React from 'react';
 import Parse from 'parse';
 import cx from 'classnames';
-import { FlexView, LoadingSpinner } from 'revenge-react-components';
+import pick from 'lodash/object/pick';
+import { FlexView } from 'buildo-react-components/lib/flex';
+import LoadingSpinner from 'buildo-react-components/lib/loading-spinner';
 import AddSong from './AddSong';
 import Song from './Song';
-import { pick } from 'lodash';
 
 export default class PartifySessionRoute extends React.Component {
 

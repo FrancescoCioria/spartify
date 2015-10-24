@@ -1,12 +1,20 @@
-import React from 'react/addons';
-import { linkState } from 'revenge-react-components';
-// import { Navigation } from 'react-router-transition-context';
+import React from 'react';
+import { t } from 'revenge';
+// import { linkState } from 'buildo-react-components/lib/link-state';
 
 export default class CodeVerificationRoute extends React.Component {
 
-  constructor() {
-    super();
+  static contextTypes = {
+    router: t.Func
+  }
+
+  constructor(props) {
+    super(props);
     this.state = {};
+  }
+
+  componentDidMount() {
+    this.context.router.replaceWith('/7Ooxqxnt4A');
   }
 
   onSubmit() {
@@ -17,15 +25,16 @@ export default class CodeVerificationRoute extends React.Component {
   }
 
   render() {
-    return (
-      <div id='code-verification'>
-        <form>
-          <label>Inserisci codice</label>
-          <input valueLink={linkState(this, 'code')}/>
-          <button onClick={this.onSubmit}>INVIA</button>
-        </form>
-      </div>
-    );
+    return null;
+    // return (
+    //   <div id='code-verification'>
+    //     <form>
+    //       <label>Inserisci codice</label>
+    //       <input valueLink={linkState(this, 'code')}/>
+    //       <button onClick={this.onSubmit}>INVIA</button>
+    //     </form>
+    //   </div>
+    // );
   }
 
 }
