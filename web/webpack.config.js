@@ -6,6 +6,8 @@ var webpackBase = require('./webpack.base');
 var assign = require('lodash/object').assign;
 var indexHtml = require('fs').readFileSync(path.resolve(__dirname, './src/index.html'), 'utf8');
 
+indexHtml = indexHtml.replace('__GZIP__', '');
+
 var paths = {
   SRC: path.resolve(__dirname, './src'),
   DIST: path.resolve(__dirname, './lib')
