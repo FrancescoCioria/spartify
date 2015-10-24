@@ -9,7 +9,6 @@
     "preversion": "npm run lint && npm run test",
     "postversion": "git push && git push --tags",
     "build-deploy": "rm -rf deploy && mkdir deploy && webpack --config ./webpack.config.build.js --progress",
-    "deploy": "npm run build-deploy && git reset && git add ./deploy && git commit -m 'deploy' && git push",
     "start": "rm -rf lib && mkdir lib && webpack-dev-server --config ./webpack.config.js --progress --hot --inline"
   },
   "repository": {
