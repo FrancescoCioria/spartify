@@ -18,7 +18,12 @@ export default class PartifySessionRoute extends React.Component {
   }
 
   componentDidMount() {
-    this.getQueue();
+    this.refresh();
+    this.interval = setInterval(this.refresh, 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getPartySessionPointer = () => {
