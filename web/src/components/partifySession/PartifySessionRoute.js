@@ -45,7 +45,10 @@ export default class PartifySessionRoute extends React.Component {
 
   onGetQueueSuccess = (res) => {
     const queue = res.map(s => ({ id: s.id, ...s.attributes }));
-    queue.sort((a, b) => (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes)); // TODO(keep queue order secret -> sort by title)
+    queue.sort((a, b) => {
+      const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes); // TODO(keep queue order secret -> sort by title)
+      return delta !== 0 ? delta : (a.createdAt - b.createdAt);
+    });
     this.setState({ queue, loading: false });
   }
 
