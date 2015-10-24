@@ -34,6 +34,7 @@ export default class PartifySessionRoute extends React.Component {
     const Song = Parse.Object.extend('Song');
     const query = new Parse.Query(Song);
     query.equalTo('party_session', this.getPartySessionPointer());
+    query.equalTo('played', false);
     query.limit(1000);
     query.find({
       success: this.onGetQueueSuccess,
