@@ -13,7 +13,7 @@ export default class CodeVerificationRoute extends React.Component {
   }
 
   componentDidMount() {
-    this.context.router.replaceWith('PARTIFY_SESSION', { partySession: '7Ooxqxnt4A' });
+    this.context.router.replaceWith('PARTIFY_SESSION', { partySession: 'the-spooky-loft' });
   }
 
   onSubmit() {

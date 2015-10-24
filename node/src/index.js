@@ -2,7 +2,7 @@ import runPlayer from './app';
 import resetDB from './populateWithBuildoTrushy';
 import utils from './utils';
 
-const HARDCODED_PARTY_SESSION = '7Ooxqxnt4A';
+const HARDCODED_PARTY_SESSION = 'the-spooky-loft';
 
 const rl = utils.rlinterface();
 
