@@ -43,6 +43,50 @@ Parse.Cloud.define('setAsPlayed', function(request, response) {
   });
 });
 
+Parse.Cloud.define('getNowPlaying', function(request, response) {
+  var query = new Parse.Query('Song');
+  query.equalTo('party_session', request.params.partySession);
+  query.equalTo('played', true);
+  query.limit(10000);
+  query.find({
+    success: function(res) {
+      var songs = res;
+      songs.sort(function(a, b) { return (b.attributes.updatedAt - a.attributes.updatedAt); });
+      var nowPlaying = songs[0];
+      if (nowPlaying.id !== request.params.songId) {
+        responde.success(nowPlaying);
+      } else {
+        response.error('Now playing song hasn\'t changed');;
+      }
+    },
+    error: function() {
+      response.error('No song has yet been played');
+    }
+  });
+});
+
+Parse.Cloud.define('getQueue', function(request, response) {
+  var Song = Parse.Object.extend('Song');
+  var query = new Parse.Query(Song);
+  query.equalTo('party_session', request.params.partySession);
+  query.equalTo('played', false);
+  query.limit(10000);
+  query.find({
+    success: function(res) {
+      // get last update
+      var lastUpdate = res.reduce(function (acc, s) { return s.attributes.updatedAt > acc ? s.attributes.updatedAt : acc; }, 0);
+      if (lastUpdate > request.params.lastUpdate) {
+        response.success({ res: res, lastUpdate: lastUpdate });
+      } else {
+        response.error('Queue hasn\'t changed');
+      }
+    },
+    error: function() {
+      response.error('Queue lookup failed');
+    }
+  });
+});
+
 
 Parse.Cloud.beforeSave('Song', function(request, response) {
   if (request.object.id) {
