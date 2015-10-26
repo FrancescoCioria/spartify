@@ -62,7 +62,10 @@ function logInfos() {
 async function updateQueue() {
   const res = await app.find('Song', {where: {party_session: pointer, played: false}, limit: 1000});
   queue = res.results;
-  queue.sort((a, b) => (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes));
+  queue.sort((a, b) => {
+    const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
+    return delta !== 0 ? delta : (a.createdAt - b.createdAt);
+  });
 }
 
 async function playNext() {
