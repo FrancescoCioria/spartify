@@ -76,12 +76,10 @@ export default class PartifySessionRoute extends React.Component {
   }
 
   getQueue = () => {
-    const { sortQueue } = this;
     return new Promise(resolve => {
       Parse.Cloud.run('getQueue', { lastUpdate: this.state.lastUpdate, partySession: this.getPartySessionPointer() }, {
         success: (res) => {
           const queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
-          sortQueue(queue);
           resolve({ queue, lastUpdate: res.lastUpdate });
         },
         error: resolve
