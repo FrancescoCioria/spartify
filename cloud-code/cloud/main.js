@@ -54,7 +54,7 @@ Parse.Cloud.define('getNowPlaying', function(request, response) {
       songs.sort(function(a, b) { return (b.attributes.updatedAt - a.attributes.updatedAt); });
       var nowPlaying = songs[0];
       if (nowPlaying.id !== request.params.songId) {
-        responde.success(nowPlaying);
+        response.success(nowPlaying);
       } else {
         response.error('Now playing song hasn\'t changed');;
       }
