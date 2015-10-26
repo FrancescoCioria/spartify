@@ -12,6 +12,10 @@
     margin: 0 -10px;
   }
 
+  .song-option {
+    background-color: #FAFAFA;
+  }
+
   .Select {
     width: 80%;
     margin-bottom: 150px;
@@ -20,12 +24,13 @@
       background-color: transparent;
       box-shadow: none;
       border: none;
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid white !important;
       border-radius: 0;
       padding: 25px 52px 10px 20px;
 
       .Select-placeholder {
         padding: 25px 52px 25px 25px;
+        color: #AAA !important;
       }
 
       &:hover {
@@ -38,6 +43,10 @@
           color: white;
           width: 100% !important;
         }
+      }
+
+      .Select-arrow {
+        display: none;
       }
     }
   }

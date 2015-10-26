@@ -1,3 +1,14 @@
+body {
+  background-color: #FAFAFA;
+}
+
+#app {
+  .queue {
+    background-color: #EAEAEA;
+    padding: 0 1px;
+  }
+}
+
 .is-desktop #app {
 
   .header {
@@ -11,6 +22,7 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 2px;
     }
+
   }
 }
 
@@ -24,8 +36,9 @@
     // top: 80%;
 
     .queue {
-      border-radius: 5px;
-      overflow: hidden;
+      // border-radius: 5px;
+      // overflow: hidden;
+      padding: 0;
     }
   }
 

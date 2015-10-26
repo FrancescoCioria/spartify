@@ -1,10 +1,7 @@
 import React from 'react';
 // import Parse from 'parse';
 import { props, t } from 'tcomb-react';
-import cx from 'classnames';
-import { FlexView } from 'buildo-react-components/lib/flex';
-
-require('./song.scss');
+import Song from './Song';
 
 @props({
   id: t.Str,
@@ -27,22 +24,13 @@ export default class NowPlaying extends React.Component {
   isSkipped = () => localStorage.getItem(this.props.id) === 'skip'
 
   render() {
-    const { title, artist } = this.props;
-    return (
-      <FlexView className='song now-playing' vAlignContent='center'>
-        <div className='info'>
-          <div className='title'>{title}</div>
-          <div className='artist'>{artist}</div>
-        </div>
-        <div className={cx('upvote skipped', { active: this.isSkipped() })}>
-          Now playing
-        {
-          // <div onClick={this.toggleSkip} className={cx('upvote skipped', { active: this.isSkipped() })}>
-            // {this.isSkipped() ? 'skipped' : 'skip'}
-          }
-        </div>
-      </FlexView>
-    );
+    const action = {
+      onClick: this.toggleSkip,
+      text: 'skip',
+      className: 'upvote', //TODO
+      active: this.isSkipped()
+    };
+    return <Song { ...this.props } className='now-playing' action={action} />;
   }
 
 }

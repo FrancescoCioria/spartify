@@ -4,8 +4,9 @@ import cx from 'classnames';
 import pick from 'lodash/object/pick';
 import { FlexView } from 'buildo-react-components/lib/flex';
 import LoadingSpinner from 'buildo-react-components/lib/loading-spinner';
+import Shuffle from 'react-shuffle';
 import AddSong from './AddSong';
-import Song from './Song';
+import QueueSong from './QueueSong';
 import NowPlaying from './NowPlaying';
 
 export default class PartifySessionRoute extends React.Component {
@@ -111,17 +112,34 @@ export default class PartifySessionRoute extends React.Component {
     this.setState({ loading: true });
   }
 
+  onToggleUpvote = (songId, upvote) => {
+    const queue = this.state.queue.map(s => {
+      if (s.id === songId) {
+        s.up_votes = s.up_votes + (upvote ? +1 : -1);
+      }
+      return s;
+    });
+    this.sortQueue(queue);
+    this.setState({ queue }, this.refresh);
+  }
+
+  getSongs = () => {
+    const { queue, nowPlaying } = this.state;
+    const queueSongs = queue.map(song =>
+      <QueueSong { ...pick(song, ['id', 'title', 'artist']) } upvotes={song.up_votes} onChange={this.onToggleUpvote} key={song.id} />
+    );
+    return [<NowPlaying { ...pick(nowPlaying, ['id', 'title', 'artist']) } key={nowPlaying.id} />].concat(queueSongs);
+  }
+
   render() {
-    const { queue, loading, nowPlaying } = this.state;
+    const { queue, loading } = this.state;
     if (!queue) { return null; }
     return (
       <div id='partify' className='songs-list' grow column>
         <AddSong onSave={this.onSave} />
         <FlexView className='page-content' hAlignContent='center'>
           <FlexView className={cx('queue', { loading })} style={{ position: 'relative' }} column grow>
-            { loading && <LoadingSpinner /> }
-            <NowPlaying { ...pick(nowPlaying, ['id', 'title', 'artist']) } key='now-playing' />
-            { queue.map((song, k) => <Song { ...pick(song, ['id', 'title', 'artist']) } key={k} />) }
+            {this.getSongs()}
           </FlexView>
         </FlexView>
       </div>

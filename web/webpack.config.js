@@ -26,6 +26,7 @@ module.exports = assign({}, webpackBase, {
     contentBase: paths.DIST,
     hot: true,
     inline: true,
+    host: '0.0.0.0',
     port: '8080'
   },
 
