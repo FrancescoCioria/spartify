@@ -3,8 +3,8 @@ import Parse from 'parse';
 import cx from 'classnames';
 import pick from 'lodash/object/pick';
 import { FlexView } from 'buildo-react-components/lib/flex';
-import LoadingSpinner from 'buildo-react-components/lib/loading-spinner';
-import Shuffle from 'react-shuffle';
+// import LoadingSpinner from 'buildo-react-components/lib/loading-spinner';
+// import Shuffle from 'react-shuffle';
 import AddSong from './AddSong';
 import QueueSong from './QueueSong';
 import NowPlaying from './NowPlaying';
@@ -13,6 +13,7 @@ export default class PartifySessionRoute extends React.Component {
 
   constructor(props) {
     super(props);
+    this.ignoreQueueUpdate = false;
     this.state = {
       loading: false,
       lastUpdate: 0,
@@ -49,10 +50,11 @@ export default class PartifySessionRoute extends React.Component {
         if (!(res[0] instanceof Parse.Error)) {
           state.nowPlaying = res[0];
         }
-        if (!(res[1] instanceof Parse.Error)) {
+        if (!(res[1] instanceof Parse.Error) && !this.ignoreQueueUpdate) {
           state.queue = res[1].queue;
           state.lastUpdate = res[1].lastUpdate;
         }
+        this.ignoreQueueUpdate = false;
         this.setState(state);
       });
   }
@@ -115,12 +117,13 @@ export default class PartifySessionRoute extends React.Component {
   onToggleUpvote = (songId, upvote) => {
     const queue = this.state.queue.map(s => {
       if (s.id === songId) {
-        s.up_votes = s.up_votes + (upvote ? +1 : -1);
+        s.up_votes = s.up_votes + (upvote ? +1 : -1); //eslint-disable-line
       }
       return s;
     });
     this.sortQueue(queue);
-    this.setState({ queue }, this.refresh);
+    this.ignoreQueueUpdate = true;
+    this.setState({ queue });
   }
 
   getSongs = () => {
