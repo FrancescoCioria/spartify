@@ -13,13 +13,17 @@ export default class PartifySessionRoute extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      lastUpdate: 0,
+      nowPlaying: {
+        id: ''
+      }
     };
   }
 
   componentDidMount() {
     this.refresh();
-    this.interval = setInterval(this.refresh, 10000);
+    this.interval = setInterval(this.refresh, 2000);
   }
 
   componentWillUnmount() {
@@ -39,47 +43,43 @@ export default class PartifySessionRoute extends React.Component {
   refresh = () => {
     Promise.all([this.getNowPlaying(), this.getQueue()])
       .then(res => {
-        this.setState({
-          nowPlaying: res[0],
-          queue: res[1],
-          loading: false
-        });
+        const state = {};
+        console.log(res[0]);
+        if (!(res[0] instanceof Parse.Error)) {
+          state.nowPlaying = res[0];
+        }
+        if (!(res[1] instanceof Parse.Error)) {
+          state.queue = res[1].queue;
+          state.lastUpdate = res[1].lastUpdate;
+        }
+        this.setState(state);
       });
   }
 
   getNowPlaying = () => {
-    var query = new Parse.Query('Song');
-    query.equalTo('party_session', this.getPartySessionPointer());
-    query.equalTo('played', true);
-    query.limit(1000);
     return new Promise(resolve => {
-      query.find({
-        success: function(res) {
-          const songs = res.map(s => ({ id: s.id, ...s.attributes }));
-          songs.sort((a, b) => (b.updatedAt - a.updatedAt));
-          const nowPlaying = songs[0];
-          resolve(nowPlaying);
-        },
+      Parse.Cloud.run('getNowPlaying', { songId: this.state.nowPlaying.id, partySession: this.getPartySessionPointer() }, {
+        success: (nowPlaying) => resolve(nowPlaying),
         error: resolve
       });
     });
   }
 
+  sortQueue = (queue) => {
+    queue.sort((a, b) => {
+      const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
+      return delta !== 0 ? delta : (a.createdAt - b.createdAt);
+    });
+  }
+
   getQueue = () => {
-    const Song = Parse.Object.extend('Song');
-    const query = new Parse.Query(Song);
-    query.equalTo('party_session', this.getPartySessionPointer());
-    query.equalTo('played', false);
-    query.limit(1000);
+    const { sortQueue } = this;
     return new Promise(resolve => {
-      query.find({
+      Parse.Cloud.run('getQueue', { lastUpdate: this.state.lastUpdate, partySession: this.getPartySessionPointer() }, {
         success: (res) => {
-          const queue = res.map(s => ({ id: s.id, ...s.attributes }));
-          queue.sort((a, b) => {
-            const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes); // TODO(keep queue order secret -> sort by title)
-            return delta !== 0 ? delta : (a.createdAt - b.createdAt);
-          });
-          resolve(queue);
+          const queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
+          sortQueue(queue);
+          resolve({ queue, lastUpdate: res.lastUpdate });
         },
         error: resolve
       });
