@@ -60,7 +60,7 @@ export default class PartifySessionRoute extends React.Component {
   getNowPlaying = () => {
     return new Promise(resolve => {
       Parse.Cloud.run('getNowPlaying', { songId: this.state.nowPlaying.id, partySession: this.getPartySessionPointer() }, {
-        success: (nowPlaying) => resolve(nowPlaying),
+        success: (nowPlaying) => resolve({ id: nowPlaying.id, ...nowPlaying.attributes }),
         error: resolve
       });
     });
