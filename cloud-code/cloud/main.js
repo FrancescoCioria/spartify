@@ -75,7 +75,11 @@ Parse.Cloud.define('getQueue', function(request, response) {
     success: function(res) {
       // get last update
       var lastUpdate = res.reduce(function (acc, s) { return s.attributes.updatedAt > acc ? s.attributes.updatedAt : acc; }, 0);
-      if (lastUpdate > request.params.lastUpdate) {
+      if (!request.params.lastUpdate || lastUpdate > request.params.lastUpdate) {
+        res.sort(function (a, b) {
+          const delta = (b.attributes.up_votes - b.attributes.down_votes) - (a.attributes.up_votes - a.attributes.down_votes);
+          return delta !== 0 ? delta : (a.attributes.createdAt - b.attributes.createdAt);
+        });
         response.success({ res: res, lastUpdate: lastUpdate });
       } else {
         response.error('Queue hasn\'t changed');
