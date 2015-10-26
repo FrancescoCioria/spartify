@@ -2,13 +2,23 @@
   padding: 10px;
   // height: 70px !important;
   background-color: #FAFAFA;
+  box-sizing: border-box;
+  border: 1px solid #EAEAEA;
 
   &.queue-song {
     margin-top: 1px;
     // box-shadow: 0px -16px 0px -15px #EAEAEA;
   }
 
+  .info {
+    overflow: hidden;
+    padding-right: 10px;
+  }
+
   .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: black;
     font-size: 18px;
   }

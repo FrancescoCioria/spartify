@@ -43,20 +43,24 @@ export default class PartifySessionRoute extends React.Component {
   setLoading = (loading) => this.setState({ loading })
 
   refresh = () => {
-    Promise.all([this.getNowPlaying(), this.getQueue()])
-      .then(res => {
-        const state = {};
-        console.log(res[0]);
-        if (!(res[0] instanceof Parse.Error)) {
-          state.nowPlaying = res[0];
-        }
-        if (!(res[1] instanceof Parse.Error) && !this.ignoreQueueUpdate) {
-          state.queue = res[1].queue;
-          state.lastUpdate = res[1].lastUpdate;
-        }
-        this.ignoreQueueUpdate = false;
-        this.setState(state);
-      });
+    if (!this.ignoreQueueUpdate) {
+      Promise.all([this.getNowPlaying(), this.getQueue()])
+        .then(res => {
+          const state = {};
+          if (!(res[0] instanceof Parse.Error)) {
+            state.nowPlaying = res[0];
+          }
+          if (!(res[1] instanceof Parse.Error)) {
+            state.queue = res[1].queue;
+            state.lastUpdate = res[1].lastUpdate;
+            console.warn(res[1].lastUpdate);
+          }
+          if (!this.ignoreQueueUpdate) {
+            this.setState(state);
+          }
+        });
+    }
+    this.ignoreQueueUpdate = false;
   }
 
   getNowPlaying = () => {
@@ -102,7 +106,7 @@ export default class PartifySessionRoute extends React.Component {
     song.save(null, {
       success: (newSong) => {
         localStorage.setItem(newSong.id, 'voted');
-        this.getQueue();
+        this.refresh();
       },
       error: () => {
         setLoading(false);
@@ -126,8 +130,8 @@ export default class PartifySessionRoute extends React.Component {
 
   getSongs = () => {
     const { queue, nowPlaying } = this.state;
-    const queueSongs = queue.map(song =>
-      <QueueSong { ...pick(song, ['id', 'title', 'artist']) } upvotes={song.up_votes} onChange={this.onToggleUpvote} key={song.id} />
+    const queueSongs = queue.map((song, i) =>
+      <QueueSong { ...pick(song, ['id', 'title', 'artist']) } index={i + 1} upvotes={song.up_votes} onChange={this.onToggleUpvote} key={song.id} />
     );
     return [<NowPlaying { ...pick(nowPlaying, ['id', 'title', 'artist']) } key={nowPlaying.id} />].concat(queueSongs);
   }
@@ -135,12 +139,14 @@ export default class PartifySessionRoute extends React.Component {
   render() {
     const { queue, loading } = this.state;
     if (!queue) { return null; }
+
+    const songs = this.getSongs();
     return (
       <div id='partify' className='songs-list' grow column>
         <AddSong onSave={this.onSave} />
         <FlexView className='page-content' hAlignContent='center'>
-          <FlexView className={cx('queue', { loading })} style={{ position: 'relative' }} column grow>
-            {this.getSongs()}
+          <FlexView className={cx('queue', { loading })} style={{ position: 'relative', height: (songs.length * 60) + 'px' }} column grow>
+            {songs}
           </FlexView>
         </FlexView>
       </div>
