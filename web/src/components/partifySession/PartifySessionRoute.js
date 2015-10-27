@@ -46,16 +46,18 @@ export default class PartifySessionRoute extends React.Component {
     if (!this.ignoreQueueUpdate) {
       Promise.all([this.getNowPlaying(), this.getQueue()])
         .then(res => {
-          const state = {};
-          if (typeof res[1] !== 'string') {
+          let state;
+          if (typeof res[1] !== 'string' && !(res[1] instanceof Parse.Error)) {
+            state = state || {};
             state.queue = res[1].queue;
             state.lastUpdate = res[1].lastUpdate;
           }
-          if (typeof res[0] !== 'string') {
+          if (typeof res[0] !== 'string' && !(res[0] instanceof Parse.Error)) {
+            state = state || {};
             state.nowPlaying = res[0];
             state.queue = state.queue || this.state.queue.filter(s => s.id !== state.nowPlaying.id);
           }
-          if (!this.ignoreQueueUpdate) {
+          if (state && !this.ignoreQueueUpdate) {
             this.setState(state);
           }
         });
