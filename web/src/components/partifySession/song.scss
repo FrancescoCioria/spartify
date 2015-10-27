@@ -3,10 +3,11 @@
   // height: 70px !important;
   background-color: #FAFAFA;
   box-sizing: border-box;
-  border: 1px solid #EAEAEA;
 
   &.queue-song {
     margin-top: 1px;
+    // border-top: 1px solid #EAEAEA;
+    border-bottom: 1px solid #EAEAEA;
     // box-shadow: 0px -16px 0px -15px #EAEAEA;
   }
 
@@ -85,6 +86,7 @@
   // -webkit-animation: greenPulse 7s infinite; // TOO HEAVY ON CPU :(
   // animation: greenPulse 7s infinite;
   background-color: #91bd09;
+  border-bottom: 1px solid #91bd09;
   // box-shadow: 0 0 9px #91bd09;
 }
 

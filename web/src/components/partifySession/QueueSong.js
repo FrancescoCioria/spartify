@@ -5,7 +5,7 @@ import Song from './Song';
 
 const baseAnimationDuration = 0.3;
 const maxAnimationDuration = 3;
-const songHeight = 62;
+const songHeight = 61;
 const offsetY = 400 + songHeight;
 const accettableArea = 300; // +/- 100px still considered visible
 
