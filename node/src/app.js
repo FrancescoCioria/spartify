@@ -60,11 +60,13 @@ function logInfos() {
 
 // APP
 async function updateQueue() {
-  const res = await app.find('Song', {where: {party_session: pointer, played: false}, limit: 1000});
+  const res = await app.find('Song', {where: {party_session: pointer, played: false}, limit: 10000});
   queue = res.results;
   queue.sort((a, b) => {
-    const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
-    return delta !== 0 ? delta : (a.createdAt - b.createdAt);
+    const deltaVotes = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
+    const deltaCreationDate = a.createdAt - b.createdAt;
+    const deltaTitle = a.title < b.title ? -1 : 1;
+    return deltaVotes || deltaCreationDate || deltaTitle;
   });
 }
 

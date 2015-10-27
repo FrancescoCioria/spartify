@@ -73,17 +73,21 @@ export default class PartifySessionRoute extends React.Component {
   }
 
   sortQueue = (queue) => {
-    queue.sort((a, b) => {
-      const delta = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
-      return delta !== 0 ? delta : (a.createdAt - b.createdAt);
+    return queue.sort((a, b) => {
+      const deltaVotes = (b.up_votes - b.down_votes) - (a.up_votes - a.down_votes);
+      const deltaCreationDate = a.createdAt - b.createdAt;
+      const deltaTitle = a.title < b.title ? -1 : 1;
+      return deltaVotes || deltaCreationDate || deltaTitle;
     });
   }
 
   getQueue = () => {
+    const { sortQueue } = this;
     return new Promise(resolve => {
       Parse.Cloud.run('getQueue', { lastUpdate: this.state.lastUpdate, partySession: this.getPartySessionPointer() }, {
         success: (res) => {
-          const queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
+          let queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
+          queue = sortQueue(queue);
           resolve({ queue, lastUpdate: res.lastUpdate });
         },
         error: resolve
@@ -117,13 +121,13 @@ export default class PartifySessionRoute extends React.Component {
   }
 
   onToggleUpvote = (songId, upvote) => {
-    const queue = this.state.queue.map(s => {
+    let queue = this.state.queue.map(s => {
       if (s.id === songId) {
         s.up_votes = s.up_votes + (upvote ? +1 : -1); //eslint-disable-line
       }
       return s;
     });
-    this.sortQueue(queue);
+    queue = this.sortQueue(queue);
     this.ignoreQueueUpdate = true;
     this.setState({ queue });
   }
