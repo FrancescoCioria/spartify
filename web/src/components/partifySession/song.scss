@@ -85,8 +85,8 @@
 .song.now-playing {
   // -webkit-animation: greenPulse 7s infinite; // TOO HEAVY ON CPU :(
   // animation: greenPulse 7s infinite;
-  background-color: #91bd09;
-  border-bottom: 1px solid #91bd09;
+  background-color: #91bd09 !important;
+  border-bottom: 1px solid #91bd09 !important;
   // box-shadow: 0 0 9px #91bd09;
 }
 

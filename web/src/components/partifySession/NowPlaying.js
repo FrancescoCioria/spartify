@@ -6,7 +6,8 @@ import Song from './Song';
 @props({
   id: t.Str,
   title: t.Str,
-  artist: t.Str
+  artist: t.Str,
+  index: t.Num
 })
 export default class NowPlaying extends React.Component {
 

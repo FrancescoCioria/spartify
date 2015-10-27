@@ -47,13 +47,13 @@ export default class PartifySessionRoute extends React.Component {
       Promise.all([this.getNowPlaying(), this.getQueue()])
         .then(res => {
           const state = {};
-          if (!(res[0] instanceof Parse.Error)) {
-            state.nowPlaying = res[0];
-          }
-          if (!(res[1] instanceof Parse.Error)) {
+          if (typeof res[1] !== 'string') {
             state.queue = res[1].queue;
             state.lastUpdate = res[1].lastUpdate;
-            console.warn(res[1].lastUpdate);
+          }
+          if (typeof res[0] !== 'string') {
+            state.nowPlaying = res[0];
+            state.queue = state.queue || this.state.queue.filter(s => s.id !== state.nowPlaying.id);
           }
           if (!this.ignoreQueueUpdate) {
             this.setState(state);
@@ -66,7 +66,13 @@ export default class PartifySessionRoute extends React.Component {
   getNowPlaying = () => {
     return new Promise(resolve => {
       Parse.Cloud.run('getNowPlaying', { songId: this.state.nowPlaying.id, partySession: this.getPartySessionPointer() }, {
-        success: (nowPlaying) => resolve({ id: nowPlaying.id, ...nowPlaying.attributes }),
+        success: (nowPlaying) => {
+          if (typeof nowPlaying === 'string') {
+            resolve(nowPlaying);
+          } else {
+            resolve({ id: nowPlaying.id, ...nowPlaying.attributes });
+          }
+        },
         error: resolve
       });
     });
@@ -86,9 +92,13 @@ export default class PartifySessionRoute extends React.Component {
     return new Promise(resolve => {
       Parse.Cloud.run('getQueue', { lastUpdate: this.state.lastUpdate, partySession: this.getPartySessionPointer() }, {
         success: (res) => {
-          let queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
-          queue = sortQueue(queue);
-          resolve({ queue, lastUpdate: res.lastUpdate });
+          if (typeof res === 'string') {
+            resolve(res);
+          } else {
+            let queue = res.res.map(s => ({ id: s.id, ...s.attributes }));
+            queue = sortQueue(queue);
+            resolve({ queue, lastUpdate: res.lastUpdate });
+          }
         },
         error: resolve
       });
@@ -137,7 +147,8 @@ export default class PartifySessionRoute extends React.Component {
     const queueSongs = queue.map((song, i) =>
       <QueueSong { ...pick(song, ['id', 'title', 'artist']) } index={i + 1} upvotes={song.up_votes} onChange={this.onToggleUpvote} key={song.id} />
     );
-    return [<NowPlaying { ...pick(nowPlaying, ['id', 'title', 'artist']) } key={nowPlaying.id} />].concat(queueSongs);
+    const current = <NowPlaying { ...pick(nowPlaying, ['id', 'title', 'artist']) } index={0} key={nowPlaying.id} />;
+    return [current].concat(queueSongs);
   }
 
   render() {
