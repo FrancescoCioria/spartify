@@ -66,8 +66,8 @@ Parse.Cloud.define('getNowPlaying', function(request, response) {
 });
 
 Parse.Cloud.define('getQueue', function(request, response) {
-  var Song = Parse.Object.extend('Song');
-  var query = new Parse.Query(Song);
+  // var Song = Parse.Object.extend('Song');
+  var query = new Parse.Query('Song');
   query.equalTo('party_session', request.params.partySession);
   query.equalTo('played', false);
   query.limit(10000);
