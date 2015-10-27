@@ -65,7 +65,7 @@ export default class Song extends React.Component {
     const { text, className: actionClassName, active } = action;
 
     const style = {
-      transform: `translateY(${100 * this.state.index}%)`,
+      transform: `translate3d(0,${100 * this.state.index}%,0)`,
       WebkitTransition: this.isVisible() ? `all ${this.getDuration()}s ease-in-out` : undefined,
       transition: this.isVisible() ? `all ${this.getDuration()}s ease-in-out` : undefined,
       position: 'absolute',
