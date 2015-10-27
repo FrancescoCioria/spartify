@@ -4,6 +4,10 @@ import { props, t } from 'tcomb-react';
 import Song from './Song';
 
 const baseAnimationDuration = 0.3;
+const maxAnimationDuration = 3;
+const songHeight = 62;
+const offsetY = 400 + songHeight;
+const accettableArea = 300; // +/- 100px still considered visible
 
 @props({
   id: t.Str,
@@ -31,8 +35,7 @@ export default class QueueSong extends React.Component {
     // update Parse
     const action = this.isUpvoted() ? 'add' : 'remove';
     Parse.Cloud.run(`${action}Upvote`, { songId: id });
-    // refresh
-    // this.forceUpdate();
+    // set animating to true for custon style
     this.setAnimating(true);
     setTimeout(() => this.setAnimating(false), this.getDuration() * 1000);
     onChange(id, this.isUpvoted());
@@ -47,8 +50,20 @@ export default class QueueSong extends React.Component {
 
   getDuration = () => {
     const { index, lastIndex } = this.state;
-    const delta = Math.min(100, Math.abs(index - lastIndex)) - 1;
-    return baseAnimationDuration + (0.02 * delta);
+    const delta = Math.max(0, Math.abs(index - lastIndex) - 1);
+    return Math.min(maxAnimationDuration, baseAnimationDuration + (0.04 * delta));
+  }
+
+  isVisible = () => {
+    const { scrollY, innerHeight } = window;
+    const start = offsetY + ( this.state.index * songHeight);
+    const lastStart = offsetY + ( this.state.lastIndex * songHeight);
+    const end = lastStart + songHeight;
+    const lastEnd = start + songHeight;
+
+    const visible = (end > scrollY - accettableArea && start < scrollY + innerHeight + accettableArea);
+    const lastVisible = (lastEnd > scrollY - accettableArea && lastStart < scrollY + innerHeight + accettableArea);
+    return visible || lastVisible;
   }
 
   render() {
@@ -60,11 +75,10 @@ export default class QueueSong extends React.Component {
       className: 'upvote',
       active: this.isUpvoted()
     };
-    console.log(this.getDuration());
     const style = {
       transform: `translateY(${100 * this.state.index}%)`,
-      WebkitTransition: `all ${this.getDuration()}s ease-in-out`,
-      transition: `all ${this.getDuration()}s ease-in-out`,
+      WebkitTransition: this.isVisible() ? `all ${this.getDuration()}s ease-in-out` : undefined,
+      transition: this.isVisible() ? `all ${this.getDuration()}s ease-in-out` : undefined,
       position: 'absolute',
       top: 0,
       left: 0,
@@ -72,13 +86,14 @@ export default class QueueSong extends React.Component {
       zIndex: animating ? 999 : undefined,
       backgroundColor: animating ? '#EAEAEA' : undefined
     };
-    return <Song { ...props } className='queue-song' action={action} style={style}/>;
+    return <Song { ...props } className='queue-song' action={action} style={style} />;
   }
 
   componentWillReceiveProps(nextProps) {
     const { index } = nextProps;
     const { index: lastIndex } = this.props;
     if (index !== lastIndex) {
+      // delay animation: wait for React to reorder elements in DOM
       setTimeout(() => this.setState({ index, lastIndex }));
     }
   }
