@@ -3,7 +3,7 @@ Parse.Cloud.define('addUpvote', function(request, response) {
   var query = new Parse.Query('Song');
   query.get(request.params.songId, {
     success: function(song) {
-      var upVotes = song.attributes.up_votes + 1;
+      var upVotes = song.get('up_votes') + 1;
       song.set('up_votes', upVotes);
       song.save(null);
       response.success();
@@ -18,7 +18,7 @@ Parse.Cloud.define('removeUpvote', function(request, response) {
   var query = new Parse.Query('Song');
   query.get(request.params.songId, {
     success: function(song) {
-      var upVotes = song.attributes.up_votes > 0 ? song.attributes.up_votes - 1 : 0;
+      var upVotes = song.get('up_votes') > 0 ? song.get('up_votes') - 1 : 0;
       song.set('up_votes', upVotes);
       song.save(null);
       response.success();
@@ -51,12 +51,12 @@ Parse.Cloud.define('getNowPlaying', function(request, response) {
   query.find({
     success: function(res) {
       var songs = res;
-      songs.sort(function(a, b) { return (b.attributes.updatedAt - a.attributes.updatedAt); });
+      songs.sort(function(a, b) { return b.get('updatedAt') - a.get('updatedAt'); });
       var nowPlaying = songs[0];
       if (nowPlaying.id !== request.params.songId) {
         response.success(nowPlaying);
       } else {
-        response.error('Now playing song hasn\'t changed');;
+        response.success('Now playing song hasn\'t changed');;
       }
     },
     error: function() {
@@ -76,13 +76,13 @@ Parse.Cloud.define('getQueue', function(request, response) {
       // get last update
       var lastUpdate = res.reduce(function (acc, s) { return s.attributes.updatedAt > acc ? s.attributes.updatedAt : acc; }, 0);
       if (!request.params.lastUpdate || lastUpdate > request.params.lastUpdate) {
-        res.sort(function (a, b) {
-          const delta = (b.attributes.up_votes - b.attributes.down_votes) - (a.attributes.up_votes - a.attributes.down_votes);
-          return delta !== 0 ? delta : (a.attributes.createdAt - b.attributes.createdAt);
-        });
+        // res.sort(function (a, b) {
+        //   const delta = (b.attributes.up_votes - b.attributes.down_votes) - (a.attributes.up_votes - a.attributes.down_votes);
+        //   return delta !== 0 ? delta : (a.attributes.createdAt - b.attributes.createdAt);
+        // });
         response.success({ res: res, lastUpdate: lastUpdate });
       } else {
-        response.error('Queue hasn\'t changed');
+        response.success('Queue hasn\'t changed');
       }
     },
     error: function() {
