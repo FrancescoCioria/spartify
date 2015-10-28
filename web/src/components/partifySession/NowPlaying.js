@@ -1,5 +1,5 @@
 import React from 'react';
-// import Parse from 'parse';
+import Parse from 'parse';
 import { props, t } from 'tcomb-react';
 import Song from './Song';
 
@@ -13,16 +13,16 @@ export default class NowPlaying extends React.Component {
 
   toggleSkip = () => {
     // update localStorage
-    const item = this.isSkipped() ? '' : 'skip';
-    localStorage.setItem(this.props.id, item);
+    const item = this.isSkipped() ? '' : (this.props.id + '');
+    localStorage.setItem('skip', item);
     // update Parse
-    // const action = this.isSkipped() ? 'add' : 'remove';
-    // Parse.Cloud.run(`${action}Upvote`, { songId: this.props.id });
+    const action = this.isSkipped() ? 'add' : 'remove';
+    Parse.Cloud.run(`${action}Skip`, { songId: this.props.id });
     // refresh
     this.forceUpdate();
   }
 
-  isSkipped = () => localStorage.getItem(this.props.id) === 'skip'
+  isSkipped = () => localStorage.getItem('skip') === this.props.id
 
   render() {
     const action = {
