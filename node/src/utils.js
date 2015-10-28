@@ -32,6 +32,9 @@ function spotifyInterface() {
     }),
     playPause: () => new Promise((resolve) => {
       _spotify.playPause((err, res) => resolve(err || res));
+    }),
+    setVolume: (v) => new Promise((resolve) => {
+      _spotify.setVolume(v, (err, res) => resolve(err || res));
     })
   };
 }

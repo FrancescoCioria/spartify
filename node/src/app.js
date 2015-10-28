@@ -6,7 +6,9 @@ keypress(process.stdin);
 
 const QUIT = 'q',
   PLAY_PAUSE = [ 'f8', 'p' ],
-  NEXT = [ 'f9', 'n' ];
+  NEXT = [ 'f9', 'n' ],
+  FADE_STEPS = 50,
+  FADE_DURATION = 2000;
 
 const rl = utils.rlinterface(),
   spotify = utils.spotifyInterface(),
@@ -20,6 +22,7 @@ let queue,
   partySession,
   updatingCurrentSong = false,
   insidePlayingNext = false,
+  transitioning = false,
   ping;
 
 function log(l) {
@@ -61,6 +64,24 @@ function logInfos() {
   // process.stdout.write(`PING: ${hours}:${minutes}:${seconds}\r`);
 }
 
+function fadeTransition(volume, step, counter) {
+  transitioning = true;
+  if (counter === Math.floor(FADE_STEPS / 2)) {
+    spotify.playTrack(currentSong.href);
+  }
+  if (counter < Math.floor(FADE_STEPS / 2)) {
+    volume = Math.min(Math.max(1, volume - step), 100);
+  } else if (counter < FADE_STEPS) {
+    volume = Math.min(Math.max(1, volume + step), 100);
+  } else {
+    spotify.setVolume(volume);
+    transitioning = false;
+    return;
+  }
+  spotify.setVolume(volume);
+  setTimeout(() => fadeTransition(volume, step, counter + 1), Math.floor(FADE_DURATION / FADE_STEPS));
+}
+
 // APP
 async function updateQueue() {
   const res = await app.find('Song', {where: {party_session: pointer, played: false}, limit: 10000});
@@ -72,13 +93,19 @@ async function updateQueue() {
   });
 }
 
-async function playNext() {
+async function playNext(state) {
   // log('playNext');
   insidePlayingNext = true;
   await updateQueue();
   currentSong = queue.shift();
   await app.update('Song', currentSong.objectId, { played: true });
-  await spotify.playTrack(currentSong.href);
+  if (state && false) { // no fade transition :(
+    const { volume } = state;
+    const step = (volume / FADE_STEPS) * 2;
+    fadeTransition(volume, step, 0);
+  } else {
+    await spotify.playTrack(currentSong.href);
+  }
   insidePlayingNext = false;
 }
 
@@ -108,13 +135,13 @@ async function controlSongState() {
   process.stdout.clearLine();
   process.stdout.write(`PING: ${hours}:${minutes}:${seconds}\r`);
   const skipPosition = (100 - (Math.min(81, Math.pow(1.7, skips)) - 1)) / 100;
-  if (!insidePlayingNext) {
+  if (!insidePlayingNext && !transitioning) {
     const state = await spotify.getState();
     const track = await spotify.getTrack();
     if (!updatingCurrentSong && track.id !== currentSong.href) {
       updateCurrentSong(track);
-    } else if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 3000)) {
-      playNext();
+    } else if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 5000)) {
+      playNext(state);
     }
   }
 }
