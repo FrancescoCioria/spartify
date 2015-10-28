@@ -18,7 +18,8 @@ let queue,
   currentSong,
   skips = 0,
   partySession,
-  insidePlayingNext,
+  updatingCurrentSong = false,
+  insidePlayingNext = false,
   ping;
 
 function log(l) {
@@ -81,6 +82,24 @@ async function playNext() {
   insidePlayingNext = false;
 }
 
+async function updateCurrentSong(track) {
+  // called when user changes song manually on Spotify
+  updatingCurrentSong = true;
+  await app.insert('Song', {
+    title: track.name,
+    href: track.id,
+    artist: track.artist,
+    played: true,
+    party_session: pointer
+  });
+  const res = await app.find('Song', { where: { party_session: pointer, href: track.id } });
+  if (res.results.length) {
+    currentSong = res.results[0];
+    await app.update('Song', currentSong.objectId, { played: true, up_votes: 0, skips: 0 });
+  }
+  updatingCurrentSong = false;
+}
+
 async function controlSongState() {
   const now = new Date();
   const hours = ('0' + now.getHours()).slice(-2);
@@ -92,7 +111,9 @@ async function controlSongState() {
   if (!insidePlayingNext) {
     const state = await spotify.getState();
     const track = await spotify.getTrack();
-    if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 3000)) {
+    if (!updatingCurrentSong && track.id !== currentSong.href) {
+      updateCurrentSong(track);
+    } else if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 3000)) {
       playNext();
     }
   }
