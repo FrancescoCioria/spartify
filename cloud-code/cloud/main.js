@@ -29,6 +29,36 @@ Parse.Cloud.define('removeUpvote', function(request, response) {
   });
 });
 
+Parse.Cloud.define('addSkip', function(request, response) {
+  var query = new Parse.Query('Song');
+  query.get(request.params.songId, {
+    success: function(song) {
+      var skips = song.get('skips') + 1;
+      song.set('skips', skips);
+      song.save(null);
+      response.success();
+    },
+    error: function() {
+      response.error('song lookup failed');
+    }
+  });
+});
+
+Parse.Cloud.define('removeSkip', function(request, response) {
+  var query = new Parse.Query('Song');
+  query.get(request.params.songId, {
+    success: function(song) {
+      var skips = song.get('skips') > 0 ? song.get('skips') - 1 : 0;
+      song.set('skips', skips);
+      song.save(null);
+      response.success();
+    },
+    error: function() {
+      response.error('song lookup failed');
+    }
+  });
+});
+
 Parse.Cloud.define('setAsPlayed', function(request, response) {
   var query = new Parse.Query('Song');
   query.get(request.params.songId, {
@@ -105,6 +135,7 @@ Parse.Cloud.beforeSave('Song', function(request, response) {
           var defaults = {
             up_votes: 1,
             down_votes: 0,
+            skips: 0,
             played: false
           };
           Object.keys(defaults).forEach(function(key) {
