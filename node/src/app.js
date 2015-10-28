@@ -16,6 +16,8 @@ let queue,
   interval,
   pointer,
   currentSong,
+  skips = 0,
+  partySession,
   insidePlayingNext,
   ping;
 
@@ -86,13 +88,19 @@ async function controlSongState() {
   const seconds = ('0' + now.getSeconds()).slice(-2);
   process.stdout.clearLine();
   process.stdout.write(`PING: ${hours}:${minutes}:${seconds}\r`);
+  const skipPosition = (100 - (Math.min(81, Math.pow(1.7, skips)) - 1)) / 100;
   if (!insidePlayingNext) {
     const state = await spotify.getState();
     const track = await spotify.getTrack();
-    if ((track.duration / 1000) - state.position < 3) {
+    if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 3000)) {
       playNext();
     }
   }
+}
+
+async function updateSkips() {
+  const res = await app.find('Song', { objectId: currentSong.objectId });
+  skips = Math.max(0, res.skips || 0);
 }
 
 async function askForActions(prompt) {
@@ -116,8 +124,8 @@ async function askForActions(prompt) {
   process.stdin.resume();
 }
 
-async function runPlayer(partySession) {
-  partySession = partySession || await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
+async function runPlayer(_partySession) {
+  partySession = _partySession || await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
   pointer = {
     __type: 'Pointer',
     className: 'PartySession',
@@ -125,6 +133,7 @@ async function runPlayer(partySession) {
   };
   playNext();
   setInterval(controlSongState, 1000);
+  setInterval(updateSkips, 1000);
   askForActions(`\nuse mediakeys to control songs. type 'CTRL + C' to quit`);
   // setInterval(logInfos, 1000);
 }
