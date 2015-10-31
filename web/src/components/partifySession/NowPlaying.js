@@ -27,8 +27,8 @@ export default class NowPlaying extends React.Component {
   render() {
     const action = {
       onClick: this.toggleSkip,
-      text: 'This is 💩',
-      className: 'skipvote', //TODO
+      text: 'Vota per saltare',
+      className: 'upvote', //TODO
       active: this.isSkipped()
     };
     return <Song { ...this.props } className='now-playing' action={action} />;
