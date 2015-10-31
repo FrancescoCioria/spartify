@@ -46,6 +46,10 @@
     color: #555;
     border-radius: 5px;
 
+    &.skipvote {
+      padding: 8px 5px;
+    }
+
     &.active {
       background-color: deepskyblue;
       color: white;
