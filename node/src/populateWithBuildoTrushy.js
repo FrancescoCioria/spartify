@@ -1,4 +1,5 @@
-import tracks from '../buildo-trushy.json';
+// import tracks from '../buildo-trushy.json';
+import tracks from '../buildo-intro.json';
 import { values, includes } from 'lodash';
 import utils from './utils';
 
@@ -6,6 +7,7 @@ const rl = utils.rlinterface(),
   app = utils.appInterface();
 
 async function populateScript(partySession) {
+  console.log(partySession);
   partySession = partySession || await rl.question(`Ahoy 'n welcome to Partify.\nPlease, scribe ye parrrty code:`);
   const pointer = {
     __type: 'Pointer',
@@ -19,7 +21,7 @@ async function populateScript(partySession) {
 
   // keep only unique and available tracks
   const uniqueTracks = values(tracks.reduce((acc, track) => {
-    if (includes(track.track.available_markets, 'IT')) { // songs must be available in Italy...
+    if (true || includes(track.track.available_markets, 'IT')) { // songs must be available in Italy...
       acc[track.track.id] = track.track;
     }
     return acc;

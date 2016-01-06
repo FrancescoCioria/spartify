@@ -140,7 +140,7 @@ async function controlSongState() {
     const track = await spotify.getTrack();
     if (!updatingCurrentSong && track.id !== currentSong.href) {
       updateCurrentSong(track);
-    } else if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 5000)) {
+    } else if (state.position * 1000 > Math.min(track.duration * skipPosition, track.duration - 10000)) {
       playNext(state);
     }
   }
